@@ -60,9 +60,9 @@ window.CARD_CONFIG = {
   templates: [
     {
       id: 'navy',
-      name: '별빛 네이비',
-      image: '',
-      layout: 'top',
+      name: '응원 확성기',
+      image: 'templates/card-01.png',
+      layout: 'full',
       drawBox: true,
       fallback: 'stars',
       colors: {
@@ -73,9 +73,9 @@ window.CARD_CONFIG = {
     },
     {
       id: 'yellow',
-      name: '햇살 옐로',
-      image: '',
-      layout: 'top',
+      name: '국민대 골인',
+      image: 'templates/card-02.png',
+      layout: 'full',
       drawBox: true,
       fallback: 'sun',
       colors: {
@@ -86,9 +86,9 @@ window.CARD_CONFIG = {
     },
     {
       id: 'sky',
-      name: '마음 스카이',
-      image: '',
-      layout: 'top',
+      name: '합격 졸업장',
+      image: 'templates/card-03.png',
+      layout: 'full',
       drawBox: true,
       fallback: 'heart',
       colors: {
