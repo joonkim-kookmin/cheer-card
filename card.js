@@ -223,9 +223,13 @@
 
       ctx.textBaseline = 'alphabetic';
 
+      // 미리보기에서만: 비어 있으면 예시를 흐리게 표시 (저장 이미지에는 안 들어감)
+      var PH_COLOR = '#A3ABBA';
       var to = (data.to || '').trim();
+      var toPh = !to && !!opts.placeholderTo;
+      if (toPh) to = opts.placeholderTo;
       if (to) {
-        ctx.fillStyle = c.to;
+        ctx.fillStyle = toPh ? PH_COLOR : c.to;
         ctx.textAlign = 'left';
         ctx.font = '500 38px ' + FONT_SANS;
         ctx.fillText('To. ' + to, left, top + 34);
@@ -233,9 +237,11 @@
       }
 
       var from = (data.from || '').trim();
+      var fromPh = !from && !!opts.placeholderFrom;
+      if (fromPh) from = opts.placeholderFrom;
       var fromSize = 46;
       if (from) {
-        ctx.fillStyle = c.from;
+        ctx.fillStyle = fromPh ? PH_COLOR : c.from;
         ctx.textAlign = 'right';
         ctx.font = fromSize + 'px ' + FONT_SANS;
         var fromText = 'From. ' + from;
@@ -265,7 +271,7 @@
         }
         var blockH = lines.length * size * lh;
         var y = top + (areaH - blockH) / 2 + size * 0.95;
-        ctx.fillStyle = isPlaceholder ? '#A3ABBA' : c.message;
+        ctx.fillStyle = isPlaceholder ? PH_COLOR : c.message;
         ctx.textAlign = 'left';
         lines.forEach(function (ln, i) { ctx.fillText(ln, left, y + i * size * lh); });
       }

@@ -37,8 +37,9 @@
   fromEl.maxLength = cfg.fromMax;
   toEl.value = state.to;
   fromEl.value = state.from;
-  toEl.placeholder = '예) 사랑하는 우리 딸에게';
-  fromEl.placeholder = '예) 엄마·아빠가';
+  var EX = cfg.examples || {};
+  toEl.placeholder = EX.to ? '예) ' + EX.to : '';
+  fromEl.placeholder = EX.from ? '예) ' + EX.from : '';
 
   /* ---------- 토스트 ---------- */
   var toastTimer;
@@ -107,7 +108,8 @@
       R.ensureFonts(data.to + data.message + data.from)
         .then(function () {
           return R.renderCard(previewBuf, cfg.templates[state.tplIndex], data, cfg,
-            { scale: 0.5, placeholder: PREVIEW_PLACEHOLDER });
+            { scale: 0.5, placeholder: PREVIEW_PLACEHOLDER,
+              placeholderTo: EX.to, placeholderFrom: EX.from });
         })
         .then(function () {
           if (token !== previewToken) return;          // 더 최신 입력이 있으면 버림
