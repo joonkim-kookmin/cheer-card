@@ -60,7 +60,7 @@ window.CARD_CONFIG = {
   templates: [
     {
       id: 'navy',
-      name: '응원 확성기',
+      name: '별',
       image: 'templates/card-01.png',
       layout: 'full',
       drawBox: true,
@@ -73,7 +73,7 @@ window.CARD_CONFIG = {
     },
     {
       id: 'yellow',
-      name: '국민대 골인',
+      name: '해',
       image: 'templates/card-02.png',
       layout: 'full',
       drawBox: true,
@@ -86,7 +86,7 @@ window.CARD_CONFIG = {
     },
     {
       id: 'sky',
-      name: '합격 졸업장',
+      name: '하트',
       image: 'templates/card-03.png',
       layout: 'full',
       drawBox: true,
