@@ -77,6 +77,28 @@ button,input,textarea{font:inherit;color:inherit}
 }
 .design .thumb canvas{width:100%;height:100%;display:block}
 .design .name{font-size:13px;font-weight:500;color:var(--ink-2)}
+.sub-hint{margin:-2px 0 6px;font-size:14px;color:var(--muted)}
+.design:active .thumb{transform:scale(.97)}
+.design .thumb{transition:outline-color .15s, transform .1s}
+
+/* 2단계 큰 미리보기 */
+.preview{margin:0;display:flex;flex-direction:column;align-items:center;gap:10px}
+.preview canvas{
+  width:min(100%,280px);aspect-ratio:3/4;height:auto;display:block;border-radius:16px;
+  box-shadow:0 10px 28px rgba(10,43,94,.18);background:#E2E7EF;
+}
+.preview figcaption{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:14px}
+.preview-name{font-size:15px;font-weight:700;color:var(--navy)}
+.change-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  height:44px;padding:0 20px;border-radius:999px;cursor:pointer;
+  border:1.5px solid var(--navy);background:#fff;color:var(--navy);
+  font-size:15px;font-weight:700;-webkit-tap-highlight-color:transparent;
+  box-shadow:0 2px 8px rgba(10,43,94,.10);
+}
+.change-btn:active{background:#EEF2F8}
+.change-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+
 .design[aria-pressed="true"] .thumb{outline-color:var(--navy)}
 .design[aria-pressed="true"] .name{color:var(--navy);font-weight:700}
 .design:focus-visible{outline:none}

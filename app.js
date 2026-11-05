@@ -75,7 +75,12 @@
     btn.setAttribute('aria-pressed', i === state.tplIndex ? 'true' : 'false');
     btn.innerHTML = '<span class="thumb"><canvas aria-hidden="true"></canvas></span><span class="name"></span>';
     btn.querySelector('.name').textContent = tpl.name;
-    btn.addEventListener('click', function () { selectTemplate(i); });
+    btn.setAttribute('aria-label', tpl.name + ' 디자인으로 카드 쓰기');
+    btn.addEventListener('click', function () {
+      selectTemplate(i);
+      // 선택 표시가 잠깐 보인 뒤 2단계로 이동
+      setTimeout(function () { go('write'); }, 160);
+    });
     designWrap.appendChild(btn);
   });
 
@@ -84,6 +89,34 @@
     Array.prototype.forEach.call(designWrap.children, function (b, k) {
       b.setAttribute('aria-pressed', k === i ? 'true' : 'false');
     });
+    $('previewName').textContent = cfg.templates[i].name;
+    updatePreview(true);
+  }
+
+  /* ---------- 2단계 실시간 미리보기 ---------- */
+  var previewCanvas = $('previewCanvas');
+  var previewBuf = document.createElement('canvas');
+  var previewToken = 0, previewTimer = null;
+  var PREVIEW_PLACEHOLDER = '여기에 응원 메시지가 들어가요';
+
+  function updatePreview(now) {
+    clearTimeout(previewTimer);
+    previewTimer = setTimeout(function () {
+      var token = ++previewToken;
+      var data = { to: toEl.value.trim(), message: msgEl.value.trim(), from: fromEl.value.trim() };
+      R.ensureFonts(data.to + data.message + data.from)
+        .then(function () {
+          return R.renderCard(previewBuf, cfg.templates[state.tplIndex], data, cfg,
+            { scale: 0.5, placeholder: PREVIEW_PLACEHOLDER });
+        })
+        .then(function () {
+          if (token !== previewToken) return;          // 더 최신 입력이 있으면 버림
+          previewCanvas.width = previewBuf.width;
+          previewCanvas.height = previewBuf.height;
+          previewCanvas.getContext('2d').drawImage(previewBuf, 0, 0);
+        })
+        .catch(function (e) { console.error(e); });
+    }, now ? 0 : 120);
   }
 
   function renderThumbs() {
@@ -123,8 +156,11 @@
       ? cfg.messageRecommend + '~' + cfg.messageMax + '자로 적으면 카드가 가장 예뻐요'
       : '좋아요! 카드에 예쁘게 들어가요';
     if (n > 0) $('formError').hidden = true;
+    updatePreview();
   }
   msgEl.addEventListener('input', onMsgInput);
+  toEl.addEventListener('input', function () { updatePreview(); });
+  fromEl.addEventListener('input', function () { updatePreview(); });
   onMsgInput();
 
   /* ---------- 단계 표시 ---------- */
@@ -138,14 +174,26 @@
     bars.forEach(function (el, i) { el.classList.toggle('is-done', i + 1 < n); });
   }
 
+  /* ---------- 화면 전환: design(1) → write(2) → done(3) ---------- */
+  var STEP = { design: 1, write: 2, done: 3 };
+
   function showScreen(name) {
-    var done = name === 'done';
-    $('screenWrite').hidden = done;
-    $('screenDone').hidden = !done;
-    $('pageTitle').textContent = done ? cfg.doneTitle : cfg.pageTitle;
-    setStep(done ? 3 : 2);
+    $('screenDesign').hidden = name !== 'design';
+    $('screenWrite').hidden = name !== 'write';
+    $('screenDone').hidden = name !== 'done';
+    $('pageTitle').textContent = name === 'done' ? cfg.doneTitle : cfg.pageTitle;
+    setStep(STEP[name] || 1);
+    if (name === 'write') updatePreview(true);
     window.scrollTo(0, 0);
   }
+
+  // 앞으로 가기: 화면 전환 + 브라우저 기록 추가 (휴대폰 '뒤로' 버튼으로 이전 단계 복귀)
+  function go(name) {
+    showScreen(name);
+    history.pushState({ screen: name }, '');
+  }
+
+  $('btnChangeDesign').addEventListener('click', function () { history.back(); });
 
   /* ---------- 카드 만들기 ---------- */
   var canvas = $('cardCanvas');
@@ -188,8 +236,7 @@
         $('saveHint').textContent = isInApp || isIOS
           ? '카드 이미지를 길게 누르면 사진첩에 바로 저장돼요'
           : '아래 버튼으로 저장하거나, 이미지를 길게 눌러 저장할 수 있어요';
-        showScreen('done');
-        history.pushState({ screen: 'done' }, '');
+        go('done');
       })
       .catch(function (err) {
         console.error(err);
@@ -266,23 +313,25 @@
   });
 
   /* ---------- 다시 꾸미기 / 새 카드 ---------- */
-  function backToWrite() {
-    showScreen('write');
-  }
-  $('btnEdit').addEventListener('click', function () {
-    if (history.state && history.state.screen === 'done') history.back();
-    else backToWrite();
-  });
+  // 다시 꾸미기: 3단계 → 2단계 (입력 내용 유지)
+  $('btnEdit').addEventListener('click', function () { history.back(); });
+
+  // 새 카드: 메시지 비우고 1단계(디자인 고르기)부터
   $('btnNew').addEventListener('click', function () {
     msgEl.value = '';
     onMsgInput();
-    if (history.state && history.state.screen === 'done') history.back();
-    else backToWrite();
-    setTimeout(function () { msgEl.focus(); }, 50);
+    go('design');
   });
-  window.addEventListener('popstate', function () { backToWrite(); });
+
+  window.addEventListener('popstate', function (e) {
+    var name = (e.state && e.state.screen) || 'design';
+    if (name === 'done' && !state.blob) name = 'write';
+    showScreen(name);
+  });
 
   /* ---------- 시작 ---------- */
-  history.replaceState({ screen: 'write' }, '');
+  history.replaceState({ screen: 'design' }, '');
+  selectTemplate(state.tplIndex);
+  showScreen('design');
   renderThumbs().catch(function (e) { console.error(e); });
 })();

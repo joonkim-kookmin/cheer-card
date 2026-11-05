@@ -99,6 +99,19 @@
       [[140, 170, 14], [230, 610, 10], [930, 560, 12], [110, 470, 8], [600, 110, 8]].forEach(function (d) {
         ctx.globalAlpha = 0.35; ctx.beginPath(); ctx.arc(d[0], d[1], d[2], 0, Math.PI * 2); ctx.fill();
       });
+    } else if (tpl.fallback === 'clover') {
+      ctx.strokeStyle = c.deco; ctx.lineWidth = 7; ctx.lineJoin = 'round';
+      [[150, 170, 34, 0.9], [910, 200, 44, 0.9], [860, 600, 22, 0.45], [190, 590, 20, 0.45], [560, 90, 14, 0.35]].forEach(function (k) {
+        ctx.globalAlpha = k[3];
+        for (var q = 0; q < 4; q++) {
+          ctx.save();
+          ctx.translate(k[0], k[1]);
+          ctx.rotate(q * Math.PI / 2 + Math.PI / 4);
+          heartPath(ctx, 0, -k[2] * 0.95, k[2]);
+          ctx.fillStyle = '#FFFFFF'; ctx.fill(); ctx.stroke();
+          ctx.restore();
+        }
+      });
     } else if (tpl.fallback === 'heart') {
       ctx.strokeStyle = c.deco; ctx.lineWidth = 8; ctx.lineJoin = 'round';
       [[150, 160, 46, 0.85], [905, 190, 64, 0.85], [860, 600, 34, 0.4], [190, 590, 28, 0.4], [560, 100, 20, 0.3]].forEach(function (h) {
@@ -235,6 +248,8 @@
 
       // 메시지: 영역 안에 맞을 때까지 글자 크기 자동 축소
       var msg = (data.message || '').trim();
+      var isPlaceholder = false;
+      if (!msg && opts.placeholder) { msg = opts.placeholder; isPlaceholder = true; }
       if (msg) {
         var areaH = bottom - top;
         var size = 76, lh = 1.45, lines;
@@ -250,7 +265,7 @@
         }
         var blockH = lines.length * size * lh;
         var y = top + (areaH - blockH) / 2 + size * 0.95;
-        ctx.fillStyle = c.message;
+        ctx.fillStyle = isPlaceholder ? '#A3ABBA' : c.message;
         ctx.textAlign = 'left';
         lines.forEach(function (ln, i) { ctx.fillText(ln, left, y + i * size * lh); });
       }

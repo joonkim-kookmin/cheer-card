@@ -55,12 +55,12 @@ window.CARD_CONFIG = {
    *           'full' → 이미지를 카드 전체(1080×1440)에 깔고 그 위에 박스·글씨를 올림
    * drawBox : false 로 두면 흰 박스를 그리지 않음(디자인 이미지에 박스가 이미 있을 때)
    * colors  : 박스·글씨 색. 디자인에 맞춰 조정하세요.
-   * fallback: image가 없거나 불러오지 못했을 때 그려질 기본 디자인 (stars | sun | heart)
+   * fallback: image가 없거나 불러오지 못했을 때 그려질 기본 디자인 (stars | sun | heart | clover)
    */
   templates: [
     {
       id: 'navy',
-      name: '별',
+      name: '행운의 별',
       image: 'templates/card-01.png',
       layout: 'full',
       drawBox: true,
@@ -73,11 +73,11 @@ window.CARD_CONFIG = {
     },
     {
       id: 'yellow',
-      name: '해',
+      name: '행운의 하트',
       image: 'templates/card-02.png',
       layout: 'full',
       drawBox: true,
-      fallback: 'sun',
+      fallback: 'heart',
       colors: {
         bg: '#F2B233', title: '#0A2B5E', sub: '#4A3A0E', deco: '#0A2B5E',
         box: '#FFFFFF', boxLine: '#0A2B5E',
@@ -85,23 +85,24 @@ window.CARD_CONFIG = {
       }
     },
     {
-      id: 'sky',
-      name: '하트',
+      id: 'green',
+      name: '행운의 클로버',
       image: 'templates/card-03.png',
       layout: 'full',
       drawBox: true,
-      fallback: 'heart',
+      fallback: 'clover',
       colors: {
-        bg: '#DCE5F3', title: '#0A2B5E', sub: '#3B4456', deco: '#0A2B5E',
+        // KMU Light Green · PANTONE 376C · C50 M0 Y90 K0 · R149 G194 B61
+        bg: '#95C23D', title: '#0A2B5E', sub: '#22300C', deco: '#0A2B5E',
         box: '#FFFFFF', boxLine: '#0A2B5E',
-        to: '#5A6476', message: '#1A1F2B', from: '#0A2B5E', footer: '#3B4456'
+        to: '#5A6476', message: '#1A1F2B', from: '#3F6212', footer: '#0A2B5E'
       }
     }
   ],
 
   /* ---------- 기본 디자인(이미지 없을 때) 상단 문구 ---------- */
   fallbackText: {
-    eyebrow: '오늘을 위해 달려온 너에게',
+    eyebrow: '',   // 서브 문구 사용 안 함
     title: ['합격을', '응원해!']
   }
 };
